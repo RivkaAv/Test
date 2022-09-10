@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DietModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="WeightData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatientId" Type="Int32" Nullable="false" />
+    <Property Name="Weight" Type="Double" />
+    <Property Name="IsPaid" Type="Boolean" />
+    <Property Name="DifFromFirstTime" Type="Double" />
+    <Property Name="DifFromLastTime" Type="Double" />
+    <Property Name="MeetingId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Patient" Relationship="DietModel.FK__WeightDat__Patie__2D27B809" FromRole="WeightData" ToRole="Patient" />
+    <NavigationProperty Name="Meeting" Relationship="DietModel.FK__WeightDat__Meeti__38996AB5" FromRole="WeightData" ToRole="Meeting" />
+  </EntityType>
+  <EntityContainer Name="DietEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="WeightDatas" EntityType="Self.WeightData" />
+    <EntitySet Name="Groups" EntityType="DietModel.Group" />
+    <EntitySet Name="Patients" EntityType="DietModel.Patient" />
+    <AssociationSet Name="FK__Patient__GroupId__49C3F6B7" Association="DietModel.FK__Patient__GroupId__49C3F6B7">
+      <End Role="Group" EntitySet="Groups" />
+      <End Role="Patient" EntitySet="Patients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WeightDat__Patie__2D27B809" Association="DietModel.FK__WeightDat__Patie__2D27B809">
+      <End Role="Patient" EntitySet="Patients" />
+      <End Role="WeightData" EntitySet="WeightDatas" />
+    </AssociationSet>
+    <EntitySet Name="Meetings" EntityType="DietModel.Meeting" />
+    <AssociationSet Name="FK__Meeting__GroupId__4CA06362" Association="DietModel.FK__Meeting__GroupId__4CA06362">
+      <End Role="Group" EntitySet="Groups" />
+      <End Role="Meeting" EntitySet="Meetings" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WeightDat__Meeti__38996AB5" Association="DietModel.FK__WeightDat__Meeti__38996AB5">
+      <End Role="Meeting" EntitySet="Meetings" />
+      <End Role="WeightData" EntitySet="WeightDatas" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MeetingCount" Type="Int32" Nullable="false" />
+    <Property Name="LastMeetingNumber" Type="Int32" />
+    <NavigationProperty Name="Patients" Relationship="DietModel.FK__Patient__GroupId__49C3F6B7" FromRole="Group" ToRole="Patient" />
+    <NavigationProperty Name="Meetings" Relationship="DietModel.FK__Meeting__GroupId__4CA06362" FromRole="Group" ToRole="Meeting" />
+  </EntityType>
+  <EntityType Name="Patient">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="61" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="Phone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="GroupId" Type="Int32" />
+    <NavigationProperty Name="Group" Relationship="DietModel.FK__Patient__GroupId__49C3F6B7" FromRole="Patient" ToRole="Group" />
+    <NavigationProperty Name="WeightDatas" Relationship="DietModel.FK__WeightDat__Patie__2D27B809" FromRole="Patient" ToRole="WeightData" />
+    <Property Name="IsCancelled" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Patient__GroupId__49C3F6B7">
+    <End Type="DietModel.Group" Role="Group" Multiplicity="0..1" />
+    <End Type="DietModel.Patient" Role="Patient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Group">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Patient">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WeightDat__Patie__2D27B809">
+    <End Type="DietModel.Patient" Role="Patient" Multiplicity="1" />
+    <End Type="DietModel.WeightData" Role="WeightData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WeightData">
+        <PropertyRef Name="PatientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Meeting">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MeetingDate" Type="DateTime" Precision="0" />
+    <Property Name="MeetingNumber" Type="Int32" />
+    <Property Name="GroupId" Type="Int32" />
+    <NavigationProperty Name="Group" Relationship="DietModel.FK__Meeting__GroupId__4CA06362" FromRole="Meeting" ToRole="Group" />
+    <NavigationProperty Name="WeightDatas" Relationship="DietModel.FK__WeightDat__Meeti__38996AB5" FromRole="Meeting" ToRole="WeightData" />
+    <Property Name="IsDone" Type="Boolean" />
+  </EntityType>
+  <Association Name="FK__Meeting__GroupId__4CA06362">
+    <End Type="DietModel.Group" Role="Group" Multiplicity="0..1" />
+    <End Type="DietModel.Meeting" Role="Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Group">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WeightDat__Meeti__38996AB5">
+    <End Type="DietModel.Meeting" Role="Meeting" Multiplicity="1" />
+    <End Type="DietModel.WeightData" Role="WeightData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meeting">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WeightData">
+        <PropertyRef Name="MeetingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

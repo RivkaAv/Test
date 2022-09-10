@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DietModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Groups">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="MeetingCount" Type="int" Nullable="false" />
+    <Property Name="LastMeetingNumber" Type="int" />
+  </EntityType>
+  <EntityType Name="Meeting">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MeetingDate" Type="date" />
+    <Property Name="MeetingNumber" Type="int" />
+    <Property Name="GroupId" Type="int" />
+    <Property Name="IsDone" Type="bit" />
+  </EntityType>
+  <EntityType Name="Patient">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="61" StoreGeneratedPattern="Computed" Nullable="false" />
+    <Property Name="Phone" Type="varchar" MaxLength="10" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="IsCancelled" Type="bit" Nullable="false" />
+    <Property Name="GroupId" Type="int" />
+  </EntityType>
+  <EntityType Name="WeightData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PatientId" Type="int" Nullable="false" />
+    <Property Name="Weight" Type="float" />
+    <Property Name="IsPaid" Type="bit" />
+    <Property Name="DifFromFirstTime" Type="float" />
+    <Property Name="DifFromLastTime" Type="float" />
+    <Property Name="MeetingId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Meeting__GroupId__4CA06362">
+    <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
+    <End Role="Meeting" Type="Self.Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Groups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Patient__GroupId__5535A963">
+    <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
+    <End Role="Patient" Type="Self.Patient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Groups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Patient">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WeightDat__Meeti__38996AB5">
+    <End Role="Meeting" Type="Self.Meeting" Multiplicity="1" />
+    <End Role="WeightData" Type="Self.WeightData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meeting">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WeightData">
+        <PropertyRef Name="MeetingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WeightDat__Patie__5441852A">
+    <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+    <End Role="WeightData" Type="Self.WeightData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WeightData">
+        <PropertyRef Name="PatientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DietModelStoreContainer">
+    <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Meeting" EntityType="Self.Meeting" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WeightData" EntityType="Self.WeightData" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Meeting__GroupId__4CA06362" Association="Self.FK__Meeting__GroupId__4CA06362">
+      <End Role="Groups" EntitySet="Groups" />
+      <End Role="Meeting" EntitySet="Meeting" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Patient__GroupId__5535A963" Association="Self.FK__Patient__GroupId__5535A963">
+      <End Role="Groups" EntitySet="Groups" />
+      <End Role="Patient" EntitySet="Patient" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WeightDat__Meeti__38996AB5" Association="Self.FK__WeightDat__Meeti__38996AB5">
+      <End Role="Meeting" EntitySet="Meeting" />
+      <End Role="WeightData" EntitySet="WeightData" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WeightDat__Patie__5441852A" Association="Self.FK__WeightDat__Patie__5441852A">
+      <End Role="Patient" EntitySet="Patient" />
+      <End Role="WeightData" EntitySet="WeightData" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
